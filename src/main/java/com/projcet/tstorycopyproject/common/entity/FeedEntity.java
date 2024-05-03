@@ -39,9 +39,11 @@ public class FeedEntity extends BaseEntity {
     @ColumnDefault("'0'")
     private Long viewCount;
 
+    // 비공개 설정
     @ColumnDefault("'0'")
     private Long feedPrivate;
 
+    // 글 작성 완료 설정
     @ColumnDefault("'0'")
     private Long complete;
 

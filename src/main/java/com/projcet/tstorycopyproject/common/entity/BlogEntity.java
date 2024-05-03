@@ -40,9 +40,11 @@ public class BlogEntity extends BaseEntity {
     @Column(nullable = false)
     private String blogNickname;
 
+    // 대표블로그
     @ColumnDefault("'0'")
     private Long blogRep;
 
+    // 비로그인 사용자 댓글 허용 설정
     @ColumnDefault("'0'")
     private Long cmtOnlyLogin;
 

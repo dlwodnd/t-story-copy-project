@@ -10,7 +10,7 @@ import java.time.Duration;
 
 @Component
 @RequiredArgsConstructor
-public class RedisDao implements InitializingBean {
+public class RedisUtils implements InitializingBean {
     private final StringRedisTemplate redisTemplate;
     private ValueOperations<String, String> valueOperations;
     @Override

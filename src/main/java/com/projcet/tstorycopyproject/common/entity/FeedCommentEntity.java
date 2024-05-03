@@ -35,8 +35,9 @@ public class FeedCommentEntity extends BaseEntity {
     @Column(nullable = false)
     private String cmt;
 
+    // 댓글 비공개 설정
     @Column(nullable = false)
-    @ColumnDefault("'0'")
+    @ColumnDefault("0")
     private Long cmtPrivate;
 
     /*public void modifyFeedComment(FeedCmtPutDto dto){
