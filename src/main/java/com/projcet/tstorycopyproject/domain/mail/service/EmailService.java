@@ -1,9 +1,9 @@
 package com.projcet.tstorycopyproject.domain.mail.service;
 
-import com.projcet.tstorycopyproject.common.exception.CustomException;
-import com.projcet.tstorycopyproject.common.repository.UserRepository;
-import com.projcet.tstorycopyproject.common.utils.CommonUtils;
-import com.projcet.tstorycopyproject.common.utils.RedisUtils;
+import com.projcet.tstorycopyproject.global.exception.CustomException;
+import com.projcet.tstorycopyproject.global.repository.UserRepository;
+import com.projcet.tstorycopyproject.global.utils.CommonUtils;
+import com.projcet.tstorycopyproject.global.utils.RedisUtils;
 import com.projcet.tstorycopyproject.domain.mail.errorcode.EmailErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

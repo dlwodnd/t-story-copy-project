@@ -1,7 +1,7 @@
 package com.projcet.tstorycopyproject.domain.mail.controller;
 
-import com.projcet.tstorycopyproject.common.CustomResponse;
-import com.projcet.tstorycopyproject.common.exception.CustomException;
+import com.projcet.tstorycopyproject.global.CustomResponse;
+import com.projcet.tstorycopyproject.global.exception.CustomException;
 import com.projcet.tstorycopyproject.domain.mail.errorcode.EmailErrorCode;
 import com.projcet.tstorycopyproject.domain.mail.request.EmailCertificationRq;
 import com.projcet.tstorycopyproject.domain.mail.response.EmailCertificationRp;

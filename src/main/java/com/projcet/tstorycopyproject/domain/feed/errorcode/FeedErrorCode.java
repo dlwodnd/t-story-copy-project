@@ -1,6 +1,6 @@
 package com.projcet.tstorycopyproject.domain.feed.errorcode;
 
-import com.projcet.tstorycopyproject.common.errorcode.ErrorCode;
+import com.projcet.tstorycopyproject.global.errorcode.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

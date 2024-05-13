@@ -1,7 +1,9 @@
 package com.projcet.tstorycopyproject.domain.user.controller;
 
-import com.projcet.tstorycopyproject.common.CustomResponse;
-import com.projcet.tstorycopyproject.common.exception.CustomException;
+import com.projcet.tstorycopyproject.global.CustomResponse;
+import com.projcet.tstorycopyproject.global.auth.Login;
+import com.projcet.tstorycopyproject.global.entity.UserEntity;
+import com.projcet.tstorycopyproject.global.exception.CustomException;
 import com.projcet.tstorycopyproject.domain.user.errorcode.UserErrorCode;
 import com.projcet.tstorycopyproject.domain.user.request.UserLoginRq;
 import com.projcet.tstorycopyproject.domain.user.request.UserSignUpRq;
@@ -11,15 +13,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
+
 
     @PostMapping("/signup")//유저 회원가입
     public ResponseEntity<CustomResponse<Void>> userSignUp(@Valid @RequestPart UserSignUpRq dto
@@ -28,10 +33,10 @@ public class UserController {
         return ResponseEntity.ok(new CustomResponse<>());
     }
     @PostMapping("/login") //유저 로그인
-    public ResponseEntity<CustomResponse<UserLoginRp>> userLogin(HttpServletRequest request
-            , HttpServletResponse response
-            , @Valid @RequestBody UserLoginRq dto){
-        UserLoginRp userLoginVo = userService.userLogin(request,response,dto);
+    public ResponseEntity<CustomResponse<UserLoginRp>> userLogin(
+            HttpServletResponse response
+            , @Valid @RequestBody UserLoginRq userLoginRq){
+        UserLoginRp userLoginVo = userService.userLogin(response,userLoginRq);
         CustomResponse<UserLoginRp> customResponse = new CustomResponse<>(userLoginVo);
         return ResponseEntity.ok(customResponse);
     }
@@ -50,5 +55,10 @@ public class UserController {
         }
         CustomResponse<String> customResponse = new CustomResponse<>(nickname);
         return ResponseEntity.ok(customResponse);
+    }
+
+    @GetMapping("/test")
+    public Long test(@Login UserEntity user){
+        return user.getUserPk();
     }
 }
