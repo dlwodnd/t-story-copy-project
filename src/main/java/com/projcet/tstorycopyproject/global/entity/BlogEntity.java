@@ -1,5 +1,6 @@
 package com.projcet.tstorycopyproject.global.entity;
 
+import com.projcet.tstorycopyproject.domain.blog.request.BlogModifyRq;
 import com.projcet.tstorycopyproject.global.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -62,15 +63,15 @@ public class BlogEntity extends BaseEntity {
             , orphanRemoval = true)
     private List<CategoryEntity> categoryEntityList = new ArrayList<>();
 
-    public void modifyCatEntityList(List<CategoryEntity> categoryEntityList){
+    public void modifyCategoryEntityList(List<CategoryEntity> categoryEntityList){
         this.categoryEntityList.clear();
         this.categoryEntityList.addAll(categoryEntityList);
     }
 
-    /*public void changeBlogPic (String saveFileName) {
+    public void changeBlogPic (String saveFileName) {
         this.blogPic = saveFileName;
     }
-    public void modifyBlogInfo(BlogModifyDto dto){
+    public void modifyBlogInfo(BlogModifyRq dto){
         if(!dto.getBlogInfo().isEmpty()){
             this.blogInfo = dto.getBlogInfo();
         }
@@ -81,12 +82,11 @@ public class BlogEntity extends BaseEntity {
             this.blogTitle = dto.getBlogTitle();
         }
     }
-    public long cmtAccess(){
+    public Void cmtAccess(){
         if (this.cmtOnlyLogin == 1L){
             this.cmtOnlyLogin = 0L;
-            return 2;
         }
         this.blogRep = 1L;
-        return 1;
-    }*/
+        return null;
+    }
 }

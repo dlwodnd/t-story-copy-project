@@ -1,5 +1,6 @@
 package com.projcet.tstorycopyproject.global.entity;
 
+import com.projcet.tstorycopyproject.domain.feed.request.FeedCmtPutDto;
 import com.projcet.tstorycopyproject.global.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,9 +41,9 @@ public class FeedCommentEntity extends BaseEntity {
     @ColumnDefault("0")
     private Long cmtPrivate;
 
-    /*public void modifyFeedComment(FeedCmtPutDto dto){
+    public void modifyFeedComment(FeedCmtPutDto dto){
         this.cmt = dto.getCmt();
         this.cmtPrivate = dto.getCmtPrivate();
-    }*/
+    }
 
 }

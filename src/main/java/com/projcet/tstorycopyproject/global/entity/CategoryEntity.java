@@ -1,5 +1,6 @@
 package com.projcet.tstorycopyproject.global.entity;
 
+import com.projcet.tstorycopyproject.domain.blog.request.CategoryInfoRq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,10 +51,10 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "categoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<CategoryEntity> categoryEntityList = new ArrayList<>();
 
-    /*public void editCatEntity(CatInfoDto dto,CatEntity catEntity) {
+    public void editCatEntity(CategoryInfoRq dto, CategoryEntity catEntity) {
         this.seq = dto.getCatSeq();
         this.catNm = dto.getCatName();
         this.catOrder = dto.getCatOrder();
-        this.catEntity = catEntity;
-    }*/
+        this.categoryEntity = catEntity;
+    }
 }

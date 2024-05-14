@@ -35,7 +35,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtProperties JWTProperties;
-    private final AuthenticationFacade authenticationFacade;
 
 
     @Transactional
@@ -83,8 +82,7 @@ public class UserService {
     }
 
     @Transactional
-    public String changeProfilePic(MultipartFile profileImg) {
-        UserEntity userEntity = authenticationFacade.getLoginUserEntity();
+    public String changeProfilePic(MultipartFile profileImg,UserEntity userEntity) {
         String target = "/user/" + userEntity.getUserPk();
         myFileUtils.delAllFiles(target);
         String fileNm = myFileUtils.transferTo(profileImg, target);

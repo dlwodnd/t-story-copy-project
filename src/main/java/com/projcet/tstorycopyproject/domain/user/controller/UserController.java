@@ -41,8 +41,10 @@ public class UserController {
         return ResponseEntity.ok(customResponse);
     }
     @PatchMapping("/profile-pic")//유저 프로필 사진 변경
-    public ResponseEntity<CustomResponse<String>> changeProfilePic(@RequestPart MultipartFile profileImg){
-        String saveFile = userService.changeProfilePic(profileImg);
+    public ResponseEntity<CustomResponse<String>> changeProfilePic(
+            @RequestPart MultipartFile profileImg
+            , @Login UserEntity userEntity){
+        String saveFile = userService.changeProfilePic(profileImg,userEntity);
         CustomResponse<String> customResponse = new CustomResponse<>(saveFile);
         return ResponseEntity.ok(customResponse);
     }
@@ -55,10 +57,5 @@ public class UserController {
         }
         CustomResponse<String> customResponse = new CustomResponse<>(nickname);
         return ResponseEntity.ok(customResponse);
-    }
-
-    @GetMapping("/test")
-    public Long test(@Login UserEntity user){
-        return user.getUserPk();
     }
 }
