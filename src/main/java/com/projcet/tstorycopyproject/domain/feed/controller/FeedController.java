@@ -4,7 +4,6 @@ import com.projcet.tstorycopyproject.domain.feed.request.FeedCmtInsDto;
 import com.projcet.tstorycopyproject.domain.feed.request.FeedCmtPutDto;
 import com.projcet.tstorycopyproject.domain.feed.request.FeedInsDto;
 import com.projcet.tstorycopyproject.domain.feed.response.CatSimpleVo;
-import com.projcet.tstorycopyproject.domain.feed.response.CatVo;
 import com.projcet.tstorycopyproject.domain.feed.response.FeedPicInfoVo;
 import com.projcet.tstorycopyproject.domain.feed.response.FeedSimpleInfoVoList;
 import com.projcet.tstorycopyproject.domain.feed.service.FeedService;
@@ -25,12 +24,6 @@ import java.util.List;
 public class FeedController {
     private final FeedService feedService;
 
-    //카테고리 리스트 불러오기
-    @GetMapping("/category")
-    public ResponseEntity<CustomResponse<CatVo>> getCategory(@RequestParam Long blogPk) {
-        return ResponseEntity.ok(new CustomResponse<>(feedService.getCategory(blogPk)));
-    }
-
     //카테고리 이름 pk 불러오기
     @GetMapping("/category-list")
     public ResponseEntity<CustomResponse<List<CatSimpleVo>>> getCategoryList(
@@ -42,7 +35,7 @@ public class FeedController {
 
     //글 작성 버튼을 누르면 전에 작성한 피드가 있으면 불러오고 없으면 빈 피드를 불러온다.
     @GetMapping("/empty")
-    public ResponseEntity<CustomResponse> getEmptyFeed(
+    public ResponseEntity<CustomResponse<Void>> getEmptyFeed(
             @RequestParam Long blogPk
             , @Login UserEntity userEntity) {
         feedService.getEmptyFeed(blogPk, userEntity);
@@ -51,7 +44,7 @@ public class FeedController {
 
     //피드 삭제
     @DeleteMapping("/{blogPk}")
-    public ResponseEntity<CustomResponse> deleteFeed(
+    public ResponseEntity<CustomResponse<Void>> deleteFeed(
             @RequestParam Long feedPk
             , @PathVariable Long blogPk
             , @Login UserEntity userEntity) {
@@ -71,7 +64,7 @@ public class FeedController {
 
     //피드 사진 삭제
     @DeleteMapping("/pic")
-    public ResponseEntity<CustomResponse> deleteFeedPic(
+    public ResponseEntity<CustomResponse<Void>> deleteFeedPic(
             @RequestParam Long feedPicPk
             , @Login UserEntity userEntity) {
         feedService.deleteFeedPic(feedPicPk,userEntity);
@@ -80,7 +73,7 @@ public class FeedController {
 
     //피드 수정
     @PutMapping
-    public ResponseEntity<CustomResponse> putFeed(
+    public ResponseEntity<CustomResponse<Void>> putFeed(
             @RequestBody FeedInsDto dto
             , @Login UserEntity userEntity) {
         feedService.putFeed(dto, userEntity);
@@ -89,7 +82,7 @@ public class FeedController {
 
     //피드 좋아요
     @PatchMapping("/fav")
-    public ResponseEntity<CustomResponse> patchFeedFav(@RequestParam Long feedPk
+    public ResponseEntity<CustomResponse<Void>> patchFeedFav(@RequestParam Long feedPk
             , @Login UserEntity userEntity) {
         feedService.patchFeedFav(feedPk, userEntity);
         return ResponseEntity.ok(new CustomResponse<>());
@@ -97,7 +90,7 @@ public class FeedController {
 
     //피드 댓글 등록
     @PostMapping("/cmt")
-    public ResponseEntity<CustomResponse> postFeedCmt(@RequestBody FeedCmtInsDto dto
+    public ResponseEntity<CustomResponse<Void>> postFeedCmt(@RequestBody FeedCmtInsDto dto
             , @Login UserEntity userEntity) {
         feedService.postFeedCmt(dto, userEntity);
         return ResponseEntity.ok(new CustomResponse<>());
@@ -105,7 +98,7 @@ public class FeedController {
 
     //피드 댓글 수정
     @PutMapping("/cmt")
-    public ResponseEntity<CustomResponse> putFeedCmt(
+    public ResponseEntity<CustomResponse<Void>> putFeedCmt(
             @RequestBody FeedCmtPutDto dto
             , @Login UserEntity userEntity) {
         feedService.putFeedCmt(dto, userEntity);
@@ -114,7 +107,7 @@ public class FeedController {
 
     //피드 댓글 삭제
     @DeleteMapping("/cmt")
-    public ResponseEntity<CustomResponse> deleteFeedCmt(
+    public ResponseEntity<CustomResponse<Void>> deleteFeedCmt(
             @RequestParam Long feedCmtPk
             , @RequestBody String guestPw
             , @Login UserEntity userEntity) {

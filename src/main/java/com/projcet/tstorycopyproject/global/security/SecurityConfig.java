@@ -3,6 +3,10 @@ package com.projcet.tstorycopyproject.global.security;
 import com.projcet.tstorycopyproject.global.auth.jwt.JwtAccessDeniedHandler;
 import com.projcet.tstorycopyproject.global.auth.jwt.JwtAuthenticationEntryPoint;
 import com.projcet.tstorycopyproject.global.auth.jwt.JwtAuthenticationFilter;
+import com.projcet.tstorycopyproject.global.auth.oauth2.OAuth2AuthenticationFailureHandler;
+import com.projcet.tstorycopyproject.global.auth.oauth2.OAuth2AuthenticationRequestBasedOnCookieRepository;
+import com.projcet.tstorycopyproject.global.auth.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.projcet.tstorycopyproject.global.auth.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final OAuth2AuthenticationRequestBasedOnCookieRepository oAuth2AuthenticationRequestBasedOnCookieRepository;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -31,7 +39,17 @@ public class SecurityConfig {
                 .exceptionHandling(except -> {
                     except.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                             .accessDeniedHandler(new JwtAccessDeniedHandler());
-                }).build();
+                })
+                .oauth2Login(oauth2 -> oauth2.authorizationEndpoint(auth ->
+                                        auth.baseUri("/oauth2/authorization")
+                                                .authorizationRequestRepository(oAuth2AuthenticationRequestBasedOnCookieRepository)
+
+                                ).redirectionEndpoint(redirection -> redirection.baseUri("/*/oauth2/code/*"))
+                                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                                .failureHandler(oAuth2AuthenticationFailureHandler)
+                )
+                .build();
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -19,7 +19,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 import static io.jsonwebtoken.Jwts.claims;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j

@@ -35,7 +35,6 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String userPw;
 
-    @Column(nullable = false)
     private String userName;
 
     private String userPic;
@@ -43,7 +42,7 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @ColumnDefault("'NORMAL'")
+    @ColumnDefault("'LOCAL'")
     @Enumerated(value = EnumType.STRING)
     private SocialEnum socialType;
 

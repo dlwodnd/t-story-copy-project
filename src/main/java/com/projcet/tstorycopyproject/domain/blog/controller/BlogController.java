@@ -43,9 +43,9 @@ public class BlogController {
     }
 
     //블로그 삭제
-    @DeleteMapping("/{blogPk}")
+    @DeleteMapping()
     public ResponseEntity<CustomResponse<String>> closeBlog(
-            @PathVariable long blogPk
+            @RequestParam long blogPk
             , @Login UserEntity user) {
         blogService.closeBlog(blogPk, user);
         return ResponseEntity.ok(new CustomResponse<>("블로그 삭제 성공"));
@@ -55,7 +55,7 @@ public class BlogController {
     @PutMapping("/category")
     public ResponseEntity<CustomResponse<List<CategoryInfoRp>>> registerCategory(
             @RequestBody CategoryInsRq dto
-            ,@Login UserEntity user) {
+            , @Login UserEntity user) {
         long start = System.currentTimeMillis();
         List<CategoryInfoRp> vo = blogService.registerCategory(dto, user);
         long end = System.currentTimeMillis();
@@ -75,8 +75,8 @@ public class BlogController {
     @PostMapping("/subscribe")
     public ResponseEntity<CustomResponse<Void>> subscribe(
             @RequestParam long blogPk
-            ,@Login UserEntity user) {
-        blogService.subscribe(blogPk,user);
-        return ResponseEntity.ok().build();
+            , @Login UserEntity user) {
+        blogService.subscribe(blogPk, user);
+        return ResponseEntity.ok(new CustomResponse<>());
     }
 }

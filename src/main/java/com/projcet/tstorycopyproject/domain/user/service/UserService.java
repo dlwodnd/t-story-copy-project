@@ -1,14 +1,16 @@
 package com.projcet.tstorycopyproject.domain.user.service;
 
+import com.projcet.tstorycopyproject.domain.user.errorcode.AuthorizedErrorCode;
+import com.projcet.tstorycopyproject.domain.user.response.UserRefreshTokenRp;
 import com.projcet.tstorycopyproject.global.auth.jwt.JwtProperties;
 import com.projcet.tstorycopyproject.global.entity.UserEntity;
 import com.projcet.tstorycopyproject.global.entity.jpa_enum.SocialEnum;
 import com.projcet.tstorycopyproject.global.entity.jpa_enum.UserRoleEnum;
 import com.projcet.tstorycopyproject.global.exception.CustomException;
 import com.projcet.tstorycopyproject.global.repository.UserRepository;
-import com.projcet.tstorycopyproject.global.security.AuthenticationFacade;
 import com.projcet.tstorycopyproject.global.auth.jwt.JwtTokenProvider;
 import com.projcet.tstorycopyproject.global.security.MyPrincipal;
+import com.projcet.tstorycopyproject.global.security.MyUserDetails;
 import com.projcet.tstorycopyproject.global.utils.CookieUtils;
 import com.projcet.tstorycopyproject.global.utils.MyFileUtils;
 import com.projcet.tstorycopyproject.global.utils.RedisUtils;
@@ -16,6 +18,7 @@ import com.projcet.tstorycopyproject.domain.user.errorcode.UserErrorCode;
 import com.projcet.tstorycopyproject.domain.user.request.UserLoginRq;
 import com.projcet.tstorycopyproject.domain.user.request.UserSignUpRq;
 import com.projcet.tstorycopyproject.domain.user.response.UserLoginRp;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -89,10 +92,30 @@ public class UserService {
         userEntity.changeUserPic(fileNm);
         return fileNm;
     }
-
+    // 닉네임 중복체크
     public Boolean checkUserDuplicationNickname(String nickname) {
         return userRepository.findByNickname(nickname).isEmpty();
     }
 
+    // 엑서스 토큰 재발급
+    public UserRefreshTokenRp refreshAccessToken(HttpServletRequest request ) {
 
+        Cookie userCookie = cookieUtils.getCookie(request, "rt").get();
+        if (userCookie == null) {
+            throw new CustomException(AuthorizedErrorCode.NOT_EXISTS_REFRESH_TOKEN);
+        }
+        String token = userCookie.getValue();
+        if (!jwtTokenProvider.isValidateToken(token)) {
+            throw new CustomException(AuthorizedErrorCode.REFRESH_TOKEN_IS_EXPIRATION);
+        }
+        MyUserDetails myUserDetails = (MyUserDetails) jwtTokenProvider.getUserDetailsFromToken(token);
+        MyPrincipal myprincipal = myUserDetails.getMyPrincipal();
+        String at = jwtTokenProvider.generateAccessToken(myprincipal);
+
+        return new UserRefreshTokenRp(at);
+    }
+
+    public void userLogout(HttpServletResponse response) {
+        cookieUtils.deleteCookie(response,"rt");
+    }
 }

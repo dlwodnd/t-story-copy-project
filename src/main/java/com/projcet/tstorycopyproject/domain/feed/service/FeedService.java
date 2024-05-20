@@ -37,43 +37,6 @@ public class FeedService {
     private final FeedPicsRepository feedPicsRepository;
     private final BlogSubRepository blogSubRepository;
 
-    //카테고리 리스트 불러오기
-    public CatVo getCategory(long blogPk){
-        BlogEntity blogEntity = blogRepository.findById(blogPk).orElseThrow(()->new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
-
-        List<CatFeedInfoVo> catFeedInfoVoList = blogEntity.getCategoryEntityList().stream()
-                .map(category -> {
-                    long feedCount = feedRepository.countByCategoryEntity(category);
-                    if (!category.getCategoryEntityList().isEmpty()){
-                        feedCount = feedCount + category.getCategoryEntityList().stream()
-                                .mapToLong(feedRepository::countByCategoryEntity)
-                                .sum();
-                    }
-                    return CatFeedInfoVo.builder()
-                            .catPk(category.getCatPk())
-                            .catName(category.getCatNm())
-                            .feedCount(feedCount)
-                            .catSubInfoVoList(category.getCategoryEntityList() == null || category.getCategoryEntityList().isEmpty() ? null :
-                                    category.getCategoryEntityList().stream()
-                                            .map(subCatEntity -> {
-                                                long subFeedCount = feedRepository.countByCategoryEntity(subCatEntity);
-                                                return CatSubFeedInfoVo.builder()
-                                                        .catPk(subCatEntity.getCatPk())
-                                                        .catName(subCatEntity.getCatNm())
-                                                        .topSeq(subCatEntity.getCategoryEntity().getSeq())
-                                                        .feedCount(subFeedCount)
-                                                        .build();
-                                            })
-                                            .toList()
-                            ).build();
-                })
-                .toList();
-        return CatVo.builder()
-                .catAll("전체")
-                .feedCount(feedRepository.countAllByBlogEntity(blogEntity))
-                .catFeedInfoVoList(catFeedInfoVoList)
-                .build();
-    }
     //카테고리 이름 pk 불러오기
     public List<CatSimpleVo> getCategoryList(Long blogPk, UserEntity userEntity){
         BlogEntity blogEntity = blogRepository.findById(blogPk).orElseThrow(()->new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
@@ -84,6 +47,7 @@ public class FeedService {
                         .build())
                 .toList();
     }
+
     //비어있는 피드 생성
     public void getEmptyFeed(Long blogPk, UserEntity userEntity){
         BlogEntity blogEntity = checkUserBlog(blogPk,userEntity);
@@ -196,7 +160,7 @@ public class FeedService {
         feedCommentEntity.modifyFeedComment(dto);
         feedCmtRepository.save(feedCommentEntity);
     }
-
+    //댓글 삭제
     public void deleteFeedCmt(long cmtPk , String cmtPw, UserEntity userEntity){
         FeedCommentEntity feedCommentEntity = feedCmtRepository.findById(cmtPk)
                 .orElseThrow(() -> new CustomException(FeedErrorCode.NOT_FOUND_FEED_CMT));
