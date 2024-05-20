@@ -46,7 +46,7 @@ public class UserService {
                 .userEmail(dto.getEmailCertificationRp().getEmail())
                 .userPw(passwordEncoder.encode(dto.getPassword()))
                 .role(UserRoleEnum.USER)
-                .socialType(SocialEnum.NORMAL)
+                .socialType(SocialEnum.LOCAL)
                 .userName(dto.getName())
                 .nickname(dto.getNickname())
                 .build();
