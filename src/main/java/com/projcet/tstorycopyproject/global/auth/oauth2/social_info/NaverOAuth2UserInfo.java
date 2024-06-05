@@ -7,6 +7,7 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
         super(attributes);
     }
 
+
     @Override
     public String getId() {
         Map<String, Object> res = (Map<String, Object>)attributes.get("response");
@@ -16,7 +17,7 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     @Override
     public String getName() {
         Map<String, Object> res = (Map<String, Object>)attributes.get("response");
-        return res == null ? null : (String) res.get("name");
+        return res == null ? null : (String) res.get("nickname");
     }
 
     @Override

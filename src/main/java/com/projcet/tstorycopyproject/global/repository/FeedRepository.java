@@ -14,6 +14,14 @@ public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
     Long countByCategoryEntity(CategoryEntity categoryEntity);
     Long countAllByBlogEntity(BlogEntity blogEntity);
     Optional<FeedEntity> findAllByComplete(Long complete);
-    Page<FeedEntity> findAllByCompleteAndFeedPrivateOrderByCreatedAtDesc(Long complete, Long feedPrivate, Pageable pageable);
+    Page<FeedEntity> findAllByCompleteAndBlogEntityAndFeedPrivateOrderByCreatedAtDesc(Long complete, BlogEntity blogEntity, Long feedPrivate, Pageable pageable);
+    Page<FeedEntity> findAllByCompleteAndBlogEntityAndFeedPrivateAndCategoryEntityOrderByCreatedAtDesc(Long complete, BlogEntity blogEntity, Long feedPrivate,CategoryEntity categoryEntity, Pageable pageable);
     Page<FeedEntity> findAllByCompleteAndFeedPrivateAndBlogEntityInOrderByCreatedAtDesc(Long complete, Long feedPrivate, List<BlogEntity> blogEntityList, Pageable pageable);
+
+    Page<FeedEntity> findAllByCompleteAndBlogEntityAndFeedPrivateAndTitleContainingOrderByCreatedAtDesc(Long feedPostComplete, BlogEntity blogEntity, Long aPublic, String keyword, Pageable pageable);
+    Page<FeedEntity> findAllByCompleteAndBlogEntityAndFeedPrivateAndContentsContainingOrderByCreatedAtDesc(Long feedPostComplete, BlogEntity blogEntity, Long aPublic, String keyword, Pageable pageable);
+
+    Page<FeedEntity> findAllByBlogEntityAndComplete(BlogEntity blogEntity, long isComplete, Pageable pageable);
+
+    Optional<FeedEntity> findByFeedPkAndComplete(long feedPk, long isComplete);
 }

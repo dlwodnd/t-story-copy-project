@@ -71,12 +71,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         int rtCookieMaxAge = jwtProperties.getJwt().getRefreshTokenCookieMaxAge();
         cookieUtils.deleteCookie(response, "rt");
         cookieUtils.setCookie(response, "rt", rt, rtCookieMaxAge);
+        response.setHeader("Authorization", "Bearer " + at);
 
         UserInfo userInfo = myUserDetails.getUserInfo();
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                                    .queryParam("access_token", at)
-                                    .queryParam("user_pk", userInfo)
+                                    .queryParam("user_pk", userInfo.getUserPk())
                                     .queryParam("nickname", userInfo.getNickname()).encode()
                                     .queryParam("pic", userInfo.getUserPic())
                                     .build()

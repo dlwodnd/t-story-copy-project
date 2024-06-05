@@ -1,7 +1,7 @@
 package com.projcet.tstorycopyproject.global.entity;
 
-import com.projcet.tstorycopyproject.domain.blog.request.BlogModifyRq;
 import com.projcet.tstorycopyproject.global.entity.base.BaseEntity;
+import com.projcet.tstorycopyproject.page.manage.request.BlogModifyRq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,10 +45,6 @@ public class BlogEntity extends BaseEntity {
     @ColumnDefault("'0'")
     private Long blogRep;
 
-    // 비로그인 사용자 댓글 허용 설정
-    @ColumnDefault("'0'")
-    private Long cmtOnlyLogin;
-
     /*@ColumnDefault("'0'")
     @Column(nullable = false)
     private Long guestBookOpen;
@@ -71,6 +67,7 @@ public class BlogEntity extends BaseEntity {
     public void changeBlogPic (String saveFileName) {
         this.blogPic = saveFileName;
     }
+
     public void modifyBlogInfo(BlogModifyRq dto){
         if(!dto.getBlogInfo().isEmpty()){
             this.blogInfo = dto.getBlogInfo();
@@ -81,12 +78,5 @@ public class BlogEntity extends BaseEntity {
         if (!dto.getBlogTitle().isEmpty()){
             this.blogTitle = dto.getBlogTitle();
         }
-    }
-    public Void cmtAccess(){
-        if (this.cmtOnlyLogin == 1L){
-            this.cmtOnlyLogin = 0L;
-        }
-        this.blogRep = 1L;
-        return null;
     }
 }

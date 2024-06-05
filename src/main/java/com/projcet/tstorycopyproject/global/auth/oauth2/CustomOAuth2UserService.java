@@ -5,6 +5,7 @@ import com.projcet.tstorycopyproject.global.auth.oauth2.social_info.OAuth2UserIn
 import com.projcet.tstorycopyproject.global.auth.oauth2.social_info.OAuth2UserInfoFactory;
 import com.projcet.tstorycopyproject.global.entity.UserEntity;
 import com.projcet.tstorycopyproject.global.entity.jpa_enum.SocialEnum;
+import com.projcet.tstorycopyproject.global.entity.jpa_enum.UserRoleEnum;
 import com.projcet.tstorycopyproject.global.repository.UserRepository;
 import com.projcet.tstorycopyproject.global.security.MyPrincipal;
 import com.projcet.tstorycopyproject.global.security.MyUserDetails;
@@ -18,8 +19,10 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
@@ -52,9 +55,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .userPic(oAuth2UserInfo.getImageUrl())
                         .userName(oAuth2UserInfo.getName())
                         .nickname(oAuth2UserInfo.getName())
+                        .role(UserRoleEnum.USER)
                         .socialType(socialType)
                         .build());
-        userRepository.save(userEntity);
+        userRepository.saveAndFlush(userEntity);
 
         MyPrincipal myPrincipal = MyPrincipal.builder()
                 .userPk(userEntity.getUserPk())

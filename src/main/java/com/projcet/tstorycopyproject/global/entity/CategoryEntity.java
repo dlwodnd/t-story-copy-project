@@ -1,6 +1,6 @@
 package com.projcet.tstorycopyproject.global.entity;
 
-import com.projcet.tstorycopyproject.domain.blog.request.CategoryInfoRq;
+import com.projcet.tstorycopyproject.page.manage.request.CategoryInfoRq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "t_cat", uniqueConstraints = {
+@Table(name = "t_category", uniqueConstraints = {
         @UniqueConstraint(
                 name = "uk_order_cat",
                 columnNames = {"top_cat_seq", "cat_order"}
@@ -35,12 +35,16 @@ public class CategoryEntity {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_pk", referencedColumnName = "blogPk", columnDefinition = "BIGINT UNSIGNED")
+
     private BlogEntity blogEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "top_cat_seq", referencedColumnName = "seq", columnDefinition = "BIGINT UNSIGNED")
     private CategoryEntity categoryEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blog_pk", referencedColumnName = "blogPk", columnDefinition = "BIGINT UNSIGNED")
+    private StoryCategoryEntity storyCategoryEntity;
 
     @Column(nullable = false)
     private String catNm;

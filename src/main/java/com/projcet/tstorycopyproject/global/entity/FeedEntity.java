@@ -1,7 +1,7 @@
 package com.projcet.tstorycopyproject.global.entity;
 
-import com.projcet.tstorycopyproject.domain.feed.request.FeedInsDto;
 import com.projcet.tstorycopyproject.global.entity.base.BaseEntity;
+import com.projcet.tstorycopyproject.page.posts.request.FeedInsRq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "t_feed")
 public class FeedEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -57,12 +58,19 @@ public class FeedEntity extends BaseEntity {
     @OneToMany(mappedBy = "feedEntity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<HashTagEntity> hashTagEntitySet = new HashSet<>();
 
-    public void editFeedEntity(FeedInsDto dto, CategoryEntity categoryEntity) {
+    public void editFeedEntity(FeedInsRq dto, CategoryEntity categoryEntity) {
         this.title = dto.getTitle();
         this.contents = dto.getContent();
         this.categoryEntity = categoryEntity;
         this.feedPrivate = dto.getFeedPrivate();
         this.complete = 1L;
+    }
+    public void temporaryFeedEntity(FeedInsRq dto, CategoryEntity categoryEntity) {
+        this.title = dto.getTitle();
+        this.contents = dto.getContent();
+        this.categoryEntity = categoryEntity;
+        this.feedPrivate = dto.getFeedPrivate();
+        this.complete = 2L;
     }
     public void modifyHashTagEntityList(List<HashTagEntity> hashTagEntityList){
         this.hashTagEntitySet.clear();
