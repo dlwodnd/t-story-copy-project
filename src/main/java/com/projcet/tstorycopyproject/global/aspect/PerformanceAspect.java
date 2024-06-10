@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class PerformanceAspect {
-    @Around("execution(* com.projcet.tstorycopyproject.domain..controller.*.*(..)) || @annotation(com.projcet.tstorycopyproject.global.aspect.TimeCheck)")
+    @Around("execution(* com.projcet.tstorycopyproject.page..controller.*.*(..)) || @annotation(com.projcet.tstorycopyproject.global.aspect.TimeCheck)")
     public Object measureClassMethodExecutionTime(org.aspectj.lang.ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object returnValue = joinPoint.proceed();

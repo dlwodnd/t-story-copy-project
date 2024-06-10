@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class FeedCmtPutRq {
-    private Long cmtPk;
     private String cmt;
     private Long cmtPrivate;
 }

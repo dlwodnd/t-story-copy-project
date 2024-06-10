@@ -26,8 +26,8 @@ public class ManageService {
     private final CatRepository catRepository;
 
     // 카테고리 관리
-    public List<CategoryInfoRp> registerCategory(String blogAdd , List<CategoryInfoRq> catInfoList, UserEntity user) {
-        BlogEntity blogEntity = checkUserBlog(blogAdd, user);
+    public List<CategoryInfoRp> registerCategory(String blogAddr , List<CategoryInfoRq> catInfoList, UserEntity user) {
+        BlogEntity blogEntity = checkUserBlog(blogAddr, user);
         CategoryEntity topCatEntity = null;
         List<CategoryEntity> catEntityList = new ArrayList<>();
         for (CategoryInfoRq catInfo : catInfoList) {
@@ -101,8 +101,8 @@ public class ManageService {
                 .toList();
     }
     // 블로그 정보 수정
-    public BlogInfoRp modifyBlog(String blogAdd, BlogModifyRq dto, UserEntity user) {
-        BlogEntity blogEntity = checkUserBlog(blogAdd,user);
+    public BlogInfoRp modifyBlog(String blogAddr, BlogModifyRq dto, UserEntity user) {
+        BlogEntity blogEntity = checkUserBlog(blogAddr,user);
         blogEntity.modifyBlogInfo(dto);
 
         return BlogInfoRp.builder()
@@ -116,8 +116,8 @@ public class ManageService {
     }
 
 
-    private BlogEntity checkUserBlog(String blogAdd, UserEntity userEntity) {
-        BlogEntity blogEntity = blogRepository.findByBlogAddress(blogAdd)
+    private BlogEntity checkUserBlog(String blogAddr, UserEntity userEntity) {
+        BlogEntity blogEntity = blogRepository.findByBlogAddress(blogAddr)
                 .orElseThrow(() -> new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
         if (!blogEntity.getUserEntity().equals(userEntity)) {
             throw new CustomException(BlogErrorCode.NOT_MATCH_USER);

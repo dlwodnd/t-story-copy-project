@@ -6,12 +6,11 @@ import com.projcet.tstorycopyproject.global.entity.*;
 import com.projcet.tstorycopyproject.global.entity.embeddable.BlogSubComposite;
 import com.projcet.tstorycopyproject.global.exception.CustomException;
 import com.projcet.tstorycopyproject.global.repository.*;
-import com.projcet.tstorycopyproject.global.utils.MyFileUtils;
 import com.projcet.tstorycopyproject.page.blog.request.FeedCmtInsRq;
 import com.projcet.tstorycopyproject.page.blog.request.FeedCmtPutRq;
 import com.projcet.tstorycopyproject.page.blog.response.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 @Transactional(readOnly = true)
 public class BlogService {
     private final FeedRepository feedRepository;
@@ -36,7 +35,7 @@ public class BlogService {
     private final BlogSubRepository blogSubRepository;
 
     // 카테고리 리스트
-    public List<BlogCategoryRp> getCategoryList(String blogNm, UserEntity userEntity) {
+    public List<BlogCategoryRp> getCategoryList(String blogNm) {
         BlogEntity blogEntity = blogRepository.findByBlogAddress(blogNm).orElseThrow(() -> new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
         return blogEntity.getCategoryEntityList().stream()
                 .map(category -> BlogCategoryRp.builder()
@@ -44,6 +43,43 @@ public class BlogService {
                         .catName(category.getCatNm())
                         .build())
                 .toList();
+    }
+    // 카테고리별 포스트 갯수 조회 리스트
+    public CatByFeedCountRp getCategory(long blogPk){
+        BlogEntity blogEntity = blogRepository.findById(blogPk).orElseThrow(()->new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
+
+        List<CatByFeedInfo> catFeedInfoVoList = blogEntity.getCategoryEntityList().stream()
+                .map(category -> {
+                    long feedCount = feedRepository.countByCategoryEntity(category);
+                    if (!category.getCategoryEntityList().isEmpty()){
+                        feedCount = feedCount + category.getCategoryEntityList().stream()
+                                .mapToLong(feedRepository::countByCategoryEntity)
+                                .sum();
+                    }
+                    return CatByFeedInfo.builder()
+                            .catPk(category.getCatPk())
+                            .catName(category.getCatNm())
+                            .feedCount(feedCount)
+                            .subCatByPostsInfoList(category.getCategoryEntityList() == null || category.getCategoryEntityList().isEmpty() ? null :
+                                    category.getCategoryEntityList().stream()
+                                            .map(subCatEntity -> {
+                                                long subFeedCount = feedRepository.countByCategoryEntity(subCatEntity);
+                                                return SubCatByPostsInfo.builder()
+                                                        .catPk(subCatEntity.getCatPk())
+                                                        .catName(subCatEntity.getCatNm())
+                                                        .topSeq(subCatEntity.getCategoryEntity().getSeq())
+                                                        .feedCount(subFeedCount)
+                                                        .build();
+                                            })
+                                            .toList()
+                            ).build();
+                })
+                .toList();
+        return CatByFeedCountRp.builder()
+                .catAll("전체")
+                .feedCount(feedRepository.countAllByBlogEntity(blogEntity))
+                .catByFeedInfoList(catFeedInfoVoList)
+                .build();
     }
     // 전체 포스트 리스트
     public FeedSimpleInfoListRp getFeedAll(String blogAddress, Pageable pageable) {
@@ -135,8 +171,8 @@ public class BlogService {
 
     // 댓글 작성
     @Transactional
-    public Void postFeedCmt(FeedCmtInsRq rq, UserEntity userEntity) {
-        FeedEntity feedEntity = feedRepository.findById(rq.getFeedPk())
+    public Void postFeedCmt(Long feedPk, FeedCmtInsRq rq, UserEntity userEntity) {
+        FeedEntity feedEntity = feedRepository.findById(feedPk)
                 .orElseThrow(() -> new CustomException(BlogErrorCode.NOT_FOUND_FEED));
         FeedCommentEntity feedCommentEntity = FeedCommentEntity.builder()
                 .feedEntity(feedEntity)
@@ -159,10 +195,10 @@ public class BlogService {
 
     // 댓글 수정
     @Transactional
-    public Void putFeedCmt(FeedCmtPutRq dto, UserEntity userEntity) {
-        FeedCommentEntity feedCommentEntity = feedCmtRepository.findByCmtPkAndUserEntity(dto.getCmtPk(),userEntity)
+    public Void putFeedCmt(Long cmtPk, FeedCmtPutRq rq, UserEntity userEntity) {
+        FeedCommentEntity feedCommentEntity = feedCmtRepository.findByCmtPkAndUserEntity(cmtPk,userEntity)
                 .orElseThrow(() -> new CustomException(BlogErrorCode.NOT_FOUND_FEED_CMT));
-        feedCommentEntity.modifyFeedComment(dto);
+        feedCommentEntity.modifyFeedComment(rq);
         feedCmtRepository.save(feedCommentEntity);
         return null;
     }
@@ -208,11 +244,11 @@ public class BlogService {
     }
 
     //블로그 구독
-    public Void subscribe(long blogPk,UserEntity user){
-        BlogEntity blogEntity = blogRepository.findById(blogPk)
+    public Void subscribe(String blogAddr,UserEntity user){
+        BlogEntity blogEntity = blogRepository.findByBlogAddress(blogAddr)
                 .orElseThrow(() -> new CustomException(BlogErrorCode.NOT_FOUND_BLOG));
         BlogSubComposite blogSubComposite = BlogSubComposite.builder()
-                .blogPk(blogPk)
+                .blogPk(blogEntity.getBlogPk())
                 .userPk(user.getUserPk())
                 .build();
         if (blogSubRepository.findById(blogSubComposite).isPresent()){

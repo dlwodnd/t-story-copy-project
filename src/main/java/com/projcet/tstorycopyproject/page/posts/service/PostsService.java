@@ -133,6 +133,7 @@ public class PostsService {
             hashTagEntityList.add(hashtagEntity);
         }
         feedEntity.modifyHashTagEntityList(hashTagEntityList);
+
         return null;
     }
     // 피드 좋아요
